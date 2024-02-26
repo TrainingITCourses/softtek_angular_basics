@@ -4,28 +4,34 @@
 
 ## Requisitos para el laboratorio
 
+Proyecto generado con [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
+
 Comprobar [versión de Node.js](https://angular.io/guide/versions) y npm.
 
 ```bash
 # Check Node.js and npm versions
 node -v
 npm -v
+# Install Angular CLI
+npm i -g @angular/cli@latest
 ```
 
 > [!NOTE]
 > La aplicación de ejemplo estará en la carpeta [ActivityBookings](./ActivityBookings)
 
-Proyecto generado con [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
+## Iniciar a partir del laboratorio
+
+El código fuente de la aplicación de ejemplo se encuentra en el repositorio de GitHub [softtek_angular_basics](https://github.com/TrainingITCourses/softtek_angular_basics).
 
 ```bash
-# clone lab from github
-git clone https://github.com/AlbertoBasalo/ng-lab.git
-# install and run
-cd ng-lab/ActivityBookings
+# Clone lab from github
+git clone https://github.com/TrainingITCourses/softtek_angular_basics.git
+# Install and run
+cd softtek_angular_basics/ActivityBookings
 npm install
-# start Angular server
+# Start Angular server
 npm start
-# start a fake API server
+# Run a fake API server
 npm run api:seed
 ```
 
@@ -34,9 +40,7 @@ npm run api:seed
 Instalar **Angular CLI** y generar aplicación de ejemplo.
 
 ```bash
-# install Angular CLI
-npm i -g @angular/cli@latest
-# create new Angular project
+# Generate new Angular project
 ng new ActivityBookings --inline-style --inline-template --prefix=lab --ssr --style=css
 # Or run with npx and options with aliases (- instead of --)
 npx ng new ActivityBookings -s -t -p=lab --ssr --style=css
