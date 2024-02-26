@@ -1,21 +1,15 @@
 # Softtek Angular Basics
 
-Laboratorio para [curso de Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartidos por [Alberto Basalo](https://albertobasalo.dev) para TrainingIT.
+> Laboratorio para [curso de Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartido por [Alberto Basalo](https://albertobasalo.dev) para TrainingIT.
+
+## Requisitos para el laboratorio
 
 Comprobar [versión de Node.js](https://angular.io/guide/versions) y npm.
 
 ```bash
+# Check Node.js and npm versions
 node -v
 npm -v
-```
-
-Instalar **Angular CLI** y generar aplicación de ejemplo.
-
-```bash
-# install Angular CLI
-npm i -g @angular/cli@latest
-# create new Angular project
-ng new ActivityBookings --inline-style --inline-template --prefix=lab --ssr --style=css
 ```
 
 > [!NOTE]
@@ -33,6 +27,17 @@ npm install
 npm start
 # start a fake API server
 npm run api:seed
+```
+
+## Replicar desde cero
+
+Instalar **Angular CLI** y generar aplicación de ejemplo.
+
+```bash
+# install Angular CLI
+npm i -g @angular/cli@latest
+# create new Angular project
+ng new ActivityBookings --inline-style --inline-template --prefix=lab --ssr --style=css
 ```
 
 ---
