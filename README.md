@@ -38,6 +38,8 @@ Instalar **Angular CLI** y generar aplicación de ejemplo.
 npm i -g @angular/cli@latest
 # create new Angular project
 ng new ActivityBookings --inline-style --inline-template --prefix=lab --ssr --style=css
+# Or run with npx and options with aliases (- instead of --)
+npx ng new ActivityBookings -s -t -p=lab --ssr --style=css
 ```
 
 ---
