@@ -12,15 +12,23 @@ import { Activity } from '../domain/activity.type';
       <header>
         <h2>{{ activity.name }}</h2>
         <p [class]="activity.status">
-          <span>{{ activity.location }} {{ activity.price | currency }}</span>
+          <span>{{ activity.location }} </span>
+          <span>{{ activity.price | currency : 'EUR' }}</span>
           <span>{{ activity.date | date : 'dd-MMM-yyyy' }}</span>
           <span>{{ activity.status | uppercase }}</span>
         </p>
       </header>
       <main>
-        <p>Current participants: {{ currentParticipants }}</p>
-        <input type="number" [(ngModel)]="newParticipants" />
-        <p>Total participants: {{ currentParticipants + newParticipants }}</p>
+        <p>
+          Current participants: <b>{{ currentParticipants }}</b>
+        </p>
+        <form>
+          <label for="newParticipants">New participants:</label>
+          <input name="newParticipants" type="number" [(ngModel)]="newParticipants" />
+        </form>
+        <p>
+          Total participants: <b>{{ currentParticipants + newParticipants }}</b>
+        </p>
       </main>
       <footer>
         <button class="primary" (click)="onBookingClick()">Book now</button>
