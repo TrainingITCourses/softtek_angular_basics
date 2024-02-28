@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'sft-root',
+  selector: 'lab-root',
   standalone: true,
   imports: [RouterOutlet],
   template: `
@@ -10,7 +10,13 @@ import { RouterOutlet } from '@angular/router';
     <div>Hello Softtek.</div>
     <router-outlet />
   `,
-  styles: [],
+  styles: [
+    `
+      h1 {
+        color: #369;
+      }
+    `,
+  ],
 })
 export class AppComponent {
   title = 'ActivityBookings';

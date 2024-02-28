@@ -13,7 +13,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "sft",
+      "prefix": "lab",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
