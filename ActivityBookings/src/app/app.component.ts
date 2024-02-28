@@ -1,23 +1,17 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FooterComponent } from './core/footer.component';
+import { HeaderComponent } from './core/header.component';
 
 @Component({
   selector: 'lab-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, FooterComponent, HeaderComponent],
   template: `
-    <h1>Welcome to {{ title }}!</h1>
-    <div>Hello Softtek.</div>
+    <lab-header />
     <router-outlet />
+    <lab-footer />
   `,
-  styles: [
-    `
-      h1 {
-        color: #369;
-      }
-    `,
-  ],
+  styles: [],
 })
-export class AppComponent {
-  title = 'ActivityBookings';
-}
+export class AppComponent {}
