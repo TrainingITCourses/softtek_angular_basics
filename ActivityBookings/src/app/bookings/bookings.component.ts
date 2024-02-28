@@ -7,12 +7,22 @@ import { Activity } from '../domain/activity.type';
   standalone: true,
   imports: [CurrencyPipe, DatePipe, UpperCasePipe],
   template: `
-    <h2>{{ activity.name }}</h2>
-    <p [class]="activity.status">
-      {{ activity.location }} {{ activity.price | currency }}
-      {{ activity.date | date : 'dd-MMM-yyyy' }}
-      {{ activity.status | uppercase }}
-    </p>
+    <article>
+      <header>
+        <h2>{{ activity.name }}</h2>
+        <p [class]="activity.status">
+          <span>{{ activity.location }} {{ activity.price | currency }}</span>
+          <span>{{ activity.date | date : 'dd-MMM-yyyy' }}</span>
+          <span>{{ activity.status | uppercase }}</span>
+        </p>
+      </header>
+      <main>
+        <p>Current participants: {{ currentParticipants }}</p>
+      </main>
+      <footer>
+        <button class="primary">Book now</button>
+      </footer>
+    </article>
   `,
   styles: `
     .draft {
@@ -54,4 +64,6 @@ export class BookingsComponent {
     duration: 2,
     userId: 1,
   };
+
+  currentParticipants = 3;
 }

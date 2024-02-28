@@ -6,9 +6,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   imports: [],
   template: `
     <footer>
-      <a [href]="author.homepage" target="_blank">By {{ author.name }}.</a>
-      <div>{{ getYear() }}</div>
-      <button (click)="onAcceptCookies()">Accept cookies</button>
+      <nav>
+        <span>
+          <a [href]="author.homepage" target="_blank">By {{ author.name }}.</a>
+          <div>{{ getYear() }}</div>
+        </span>
+        <button class="secondary outline" (click)="onAcceptCookies()">Accept cookies</button>
+      </nav>
     </footer>
   `,
   styles: ``,
