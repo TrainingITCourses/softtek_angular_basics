@@ -47,6 +47,8 @@ import { Activity } from '../domain/activity.type';
         <div>
           @for (participant of participants(); track participant.id) {
             <span>🏃‍♂️ {{ participant.id }}</span>
+          } @empty {
+            <span>🕸️</span>
           }
         </div>
       </main>
@@ -99,9 +101,9 @@ export class BookingsComponent {
     slug: 'paddle-surf',
     duration: 2,
   };
-  currentParticipants: Signal<number> = signal(3);
+  currentParticipants = signal(3);
 
-  participants: WritableSignal<{ id: number }[]> = signal([{ id: 1 }, { id: 2 }, { id: 3 }]);
+  participants: WritableSignal<{ id: number }[]> = signal([]);
 
   newParticipants: WritableSignal<number> = signal(0);
 
@@ -128,9 +130,9 @@ export class BookingsComponent {
   onNewParticipantsChange(newParticipants: number) {
     this.newParticipants.set(newParticipants);
     this.participants.update((participants) => {
-      participants = participants.slice(0, this.currentParticipants());
+      participants = [];
       for (let i = 1; i <= newParticipants; i++) {
-        participants.push({ id: this.currentParticipants() + i });
+        participants.push({ id: i });
       }
       return participants;
     });
@@ -138,5 +140,7 @@ export class BookingsComponent {
 
   onBookingClick() {
     console.log('Booking saved for participants: ', this.newParticipants());
+    this.currentParticipants.set(this.totalParticipants());
+    this.newParticipants.set(0);
   }
 }
