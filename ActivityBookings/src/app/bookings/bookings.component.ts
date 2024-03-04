@@ -35,6 +35,8 @@ import { Activity } from '../domain/activity.type';
           <input
             name="newParticipants"
             type="number"
+            min="0"
+            [max]="maxNewParticipants()"
             [ngModel]="newParticipants()"
             (ngModelChange)="onNewParticipantsChange($event)"
           />
@@ -42,9 +44,18 @@ import { Activity } from '../domain/activity.type';
         <p>
           Total participants: <b>{{ totalParticipants() }}</b>
         </p>
+        <div>
+          @for (participant of participants(); track participant.id) {
+            <span>🏃‍♂️ {{ participant.id }}</span>
+          }
+        </div>
       </main>
       <footer>
-        <button class="primary" (click)="onBookingClick()">Book now</button>
+        @if (canBook()) {
+          <button class="primary" (click)="onBookingClick()">Book now</button>
+        } @else {
+          <p>Book your place</p>
+        }
       </footer>
     </article>
   `,
@@ -90,13 +101,19 @@ export class BookingsComponent {
   };
   currentParticipants: Signal<number> = signal(3);
 
-  newParticipants: WritableSignal<number> = signal(1);
+  participants: WritableSignal<{ id: number }[]> = signal([{ id: 1 }, { id: 2 }, { id: 3 }]);
+
+  newParticipants: WritableSignal<number> = signal(0);
 
   totalParticipants: Signal<number> = computed(
     () => this.currentParticipants() + this.newParticipants(),
   );
 
+  maxNewParticipants = computed(() => this.activity.maxParticipants - this.currentParticipants());
+
   isSoldOut = computed(() => this.totalParticipants() >= this.activity.maxParticipants);
+
+  canBook = computed(() => this.newParticipants() > 0);
 
   constructor() {
     effect(() => {
@@ -108,11 +125,18 @@ export class BookingsComponent {
     });
   }
 
-  onNewParticipantsChange(newValue: number) {
-    this.newParticipants.set(newValue);
+  onNewParticipantsChange(newParticipants: number) {
+    this.newParticipants.set(newParticipants);
+    this.participants.update((participants) => {
+      participants = participants.slice(0, this.currentParticipants());
+      for (let i = 1; i <= newParticipants; i++) {
+        participants.push({ id: this.currentParticipants() + i });
+      }
+      return participants;
+    });
   }
 
   onBookingClick() {
-    console.log('Booking saved for participants: ', this.newParticipants);
+    console.log('Booking saved for participants: ', this.newParticipants());
   }
 }
