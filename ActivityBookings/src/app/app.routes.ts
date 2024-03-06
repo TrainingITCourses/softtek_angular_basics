@@ -3,6 +3,10 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
+    loadComponent: () => import('./routes/home.page'),
+  },
+  {
+    path: 'bookings/:slug',
     loadComponent: () => import('./bookings/bookings.component'),
   },
   {

@@ -2,14 +2,17 @@ import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  InputSignal,
   Signal,
   WritableSignal,
   computed,
   effect,
+  input,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Activity } from '../domain/activity.type';
+import { ACTIVITIES } from '../domain/activities.data';
+import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 
 @Component({
   selector: 'lab-bookings',
@@ -17,15 +20,17 @@ import { Activity } from '../domain/activity.type';
   imports: [CurrencyPipe, DatePipe, UpperCasePipe, FormsModule],
   template: `
     <article>
-      <header>
-        <h2>{{ activity.name }}</h2>
-        <p [class]="activity.status">
-          <span>{{ activity.location }} </span>
-          <span>{{ activity.price | currency: 'EUR' }}</span>
-          <span>{{ activity.date | date: 'dd-MMM-yyyy' }}</span>
-          <span>{{ activity.status | uppercase }}</span>
-        </p>
-      </header>
+      @if (activity(); as activity) {
+        <header>
+          <h2>{{ activity.name }}</h2>
+          <p [class]="activity.status">
+            <span>{{ activity.location }} </span>
+            <span>{{ activity.price | currency: 'EUR' }}</span>
+            <span>{{ activity.date | date: 'dd-MMM-yyyy' }}</span>
+            <span>{{ activity.status | uppercase }}</span>
+          </p>
+        </header>
+      }
       <main>
         <p>
           Current participants: <b>{{ currentParticipants() }}</b>
@@ -90,19 +95,12 @@ import { Activity } from '../domain/activity.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class BookingsComponent {
-  activity: Activity = {
-    name: 'Paddle Surf',
-    location: 'Lake Leman at Lausanne',
-    price: 100,
-    date: new Date(2025, 7, 15),
-    minParticipants: 4,
-    maxParticipants: 10,
-    status: 'published',
-    id: 1,
-    userId: 1,
-    slug: 'paddle-surf',
-    duration: 2,
-  };
+  slug: InputSignal<string> = input.required<string>();
+
+  activity: Signal<Activity> = computed(
+    () => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
+  );
+
   currentParticipants = signal(3);
 
   participants: WritableSignal<{ id: number }[]> = signal([{ id: 1 }, { id: 2 }, { id: 3 }]);
@@ -113,9 +111,9 @@ export default class BookingsComponent {
     () => this.currentParticipants() + this.newParticipants(),
   );
 
-  maxNewParticipants = computed(() => this.activity.maxParticipants - this.currentParticipants());
+  maxNewParticipants = computed(() => this.activity().maxParticipants - this.currentParticipants());
 
-  isSoldOut = computed(() => this.totalParticipants() >= this.activity.maxParticipants);
+  isSoldOut = computed(() => this.totalParticipants() >= this.activity().maxParticipants);
 
   canBook = computed(() => this.newParticipants() > 0);
 
