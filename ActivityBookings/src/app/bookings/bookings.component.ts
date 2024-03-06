@@ -31,7 +31,16 @@ import { Activity } from '../domain/activity.type';
           Current participants: <b>{{ currentParticipants() }}</b>
         </p>
         <form>
-          <label for="newParticipants">New participants:</label>
+          <label for="newParticipants"
+            >New participants:
+            <span>
+              @for (participant of participants(); track participant.id) {
+                <span>🏃‍♂️ {{ participant.id }}</span>
+              } @empty {
+                <span>🕸️</span>
+              }
+            </span>
+          </label>
           <input
             name="newParticipants"
             type="number"
@@ -41,15 +50,8 @@ import { Activity } from '../domain/activity.type';
             (ngModelChange)="onNewParticipantsChange($event)"
           />
         </form>
-        <p>
-          Total participants: <b>{{ totalParticipants() }}</b>
-        </p>
         <div>
-          @for (participant of participants(); track participant.id) {
-            <span>🏃‍♂️ {{ participant.id }}</span>
-          } @empty {
-            <span>🕸️</span>
-          }
+          Total participants: <b>{{ totalParticipants() }}</b>
         </div>
       </main>
       <footer>
