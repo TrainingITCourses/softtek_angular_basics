@@ -124,7 +124,9 @@ readonly canNotBook = computed(
 
 ### 3.2.2 Efectos colaterales
 
-```tsx
+> To Do: demostrar efectos colaterales y footer con cookies
+
+```typescript
 constructor() {
  effect(() => {
     const totalParticipants = this.totalParticipants();

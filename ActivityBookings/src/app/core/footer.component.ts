@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  WritableSignal,
+  computed,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'lab-footer',
@@ -9,10 +16,20 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       <nav>
         <span>
           <a [href]="author.homepage" target="_blank">By {{ author.name }}.</a>
-          <div>{{ getYear() }}</div>
+          <div>{{ year }}</div>
         </span>
-        <button class="secondary outline" (click)="onAcceptCookies()">Accept cookies</button>
+        @if (cookiesAccepted()) {
+          <span>Cookies accepted!</span>
+        } @else {
+          <button class="secondary outline" (click)="onAcceptCookies()">Accept cookies</button>
+        }
       </nav>
+      <div>
+        <button [hidden]="cookiesAccepted()" class="secondary outline" (click)="onAcceptCookies()">
+          Accept cookies
+        </button>
+        <span [hidden]="cookiesPending()">Cookies accepted!</span>
+      </div>
     </footer>
   `,
   styles: ``,
@@ -24,13 +41,14 @@ export class FooterComponent {
     homepage: 'https://www.softtek.com/es-es/',
   };
 
-  // year = new Date().getFullYear();
+  year = new Date().getFullYear();
 
-  getYear() {
-    return new Date().getFullYear();
-  }
+  cookiesAccepted: WritableSignal<boolean> = signal(false);
+
+  cookiesPending: Signal<boolean> = computed(() => !this.cookiesAccepted());
 
   onAcceptCookies() {
-    console.log('Cookies accepted');
+    //this.cookiesAccepted.set(true);
+    this.cookiesAccepted.update((valor: boolean) => !valor);
   }
 }

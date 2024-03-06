@@ -105,7 +105,7 @@ export class BookingsComponent {
   };
   currentParticipants = signal(3);
 
-  participants: WritableSignal<{ id: number }[]> = signal([]);
+  participants: WritableSignal<{ id: number }[]> = signal([{ id: 1 }, { id: 2 }, { id: 3 }]);
 
   newParticipants: WritableSignal<number> = signal(0);
 
@@ -132,9 +132,10 @@ export class BookingsComponent {
   onNewParticipantsChange(newParticipants: number) {
     this.newParticipants.set(newParticipants);
     this.participants.update((participants) => {
-      participants = [];
+      participants = participants.slice(0, this.currentParticipants());
       for (let i = 1; i <= newParticipants; i++) {
-        participants.push({ id: i });
+        // ! fix id
+        participants.push({ id: participants.length + i });
       }
       return participants;
     });
