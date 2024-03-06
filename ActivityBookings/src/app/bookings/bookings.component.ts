@@ -89,7 +89,7 @@ import { Activity } from '../domain/activity.type';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookingsComponent {
+export default class BookingsComponent {
   activity: Activity = {
     name: 'Paddle Surf',
     location: 'Lake Leman at Lausanne',
