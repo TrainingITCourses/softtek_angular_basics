@@ -15,6 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
+import { Booking, NULL_BOOKING } from '../domain/booking.type';
 
 @Component({
   selector: 'lab-bookings',
@@ -169,6 +170,24 @@ export default class BookingsComponent {
   }
 
   onBookingClick() {
+    console.log('Saving Booking for participants: ', this.newParticipants());
+    const newBooking: Booking = NULL_BOOKING;
+    newBooking.activityId = this.activity().id;
+    newBooking.participants = this.newParticipants();
+    if (newBooking.payment)
+      newBooking.payment.amount = this.activity().price * this.newParticipants();
+    const apiUrl = 'http://localhost:3000/bookings';
+
+    this.#http.post<Booking>(apiUrl, newBooking).subscribe({
+      next: (result) => {
+        console.log('booking saved', result);
+        // ToDo : save activity status
+      },
+      error: (error) => {
+        console.log('error', error);
+      },
+    });
+
     console.log('Booking saved for participants: ', this.newParticipants());
     this.currentParticipants.set(this.totalParticipants());
     this.newParticipants.set(0);

@@ -222,7 +222,44 @@
       "userId": 2
     }
   ],
-  "bookings": [],
+  "bookings": [
+    {
+      "id": 1,
+      "activityId": 0,
+      "userId": 0,
+      "date": "2024-03-11T16:53:51.413Z",
+      "participants": 0,
+      "payment": {
+        "method": "none",
+        "amount": 0,
+        "status": "none"
+      }
+    },
+    {
+      "id": 2,
+      "activityId": 13,
+      "userId": 0,
+      "date": "2024-03-11T16:58:53.414Z",
+      "participants": 3,
+      "payment": {
+        "method": "none",
+        "amount": 0,
+        "status": "none"
+      }
+    },
+    {
+      "id": 3,
+      "activityId": 10,
+      "userId": 0,
+      "date": "2024-03-11T17:00:56.319Z",
+      "participants": 4,
+      "payment": {
+        "method": "none",
+        "amount": 400,
+        "status": "none"
+      }
+    }
+  ],
   "users": [
     {
       "email": "richard@virg.in",
