@@ -95,8 +95,10 @@ import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class BookingsComponent {
+  /** The slug of the activity that comes from the router */
   slug: InputSignal<string> = input.required<string>();
 
+  /** The activity that comes from the data array based on the slug signal */
   activity: Signal<Activity> = computed(
     () => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
   );
@@ -128,14 +130,15 @@ export default class BookingsComponent {
   }
 
   onNewParticipantsChange(newParticipants: number) {
+    /** Setting the newParticipants value */
     this.newParticipants.set(newParticipants);
+    /** Updating the participants array */
     this.participants.update((participants) => {
-      participants = participants.slice(0, this.currentParticipants());
+      const updatedParticipants = participants.slice(0, this.currentParticipants());
       for (let i = 1; i <= newParticipants; i++) {
-        // ! fix id
-        participants.push({ id: participants.length + i });
+        updatedParticipants.push({ id: updatedParticipants.length + 1 });
       }
-      return participants;
+      return updatedParticipants;
     });
   }
 
