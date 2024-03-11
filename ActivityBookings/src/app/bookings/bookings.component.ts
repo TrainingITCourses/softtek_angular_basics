@@ -7,10 +7,12 @@ import {
   WritableSignal,
   computed,
   effect,
+  inject,
   input,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 import { ACTIVITIES } from '../domain/activities.data';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 
@@ -95,6 +97,9 @@ import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class BookingsComponent {
+  #title = inject(Title);
+  #meta = inject(Meta);
+
   /** The slug of the activity that comes from the router */
   slug: InputSignal<string> = input.required<string>();
 
@@ -120,6 +125,12 @@ export default class BookingsComponent {
   canBook = computed(() => this.newParticipants() > 0);
 
   constructor() {
+    effect(() => {
+      const activity = this.activity();
+      this.#title.setTitle(activity.name);
+      const description = `${activity.name} in ${activity.location} on ${activity.date} for ${activity.price}`;
+      this.#meta.updateTag({ name: 'description', content: description });
+    });
     effect(() => {
       if (this.isSoldOut()) {
         console.log('Se ha vendido todo');

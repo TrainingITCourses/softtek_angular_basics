@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { ACTIVITIES } from '../domain/activities.data';
 import { Activity } from '../domain/activity.type';
@@ -27,5 +28,13 @@ import { Activity } from '../domain/activity.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class HomePage {
+  #title = inject(Title);
+  #meta = inject(Meta);
+
   activities: Activity[] = ACTIVITIES;
+
+  constructor() {
+    this.#title.setTitle('🏡 - Home');
+    this.#meta.updateTag({ name: 'description', content: 'Home page' });
+  }
 }
