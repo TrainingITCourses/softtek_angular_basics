@@ -1,5 +1,7 @@
 # ActivityBookings
 
+> [Laboratorio de ejemplo](https://github.com/TrainingITCourses/softtek_angular_basics) del curso de [Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartido por [Alberto Basalo](https://albertobasalo.dev) con TrainingIT.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
 
 ## Development server

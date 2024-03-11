@@ -1,6 +1,11 @@
 {
   "name": "activity-bookings",
-  "version": "0.0.0",
+  "version": "17.2.0",
+  "description": "Activity administration and booking",
+  "author": {
+    "name": "Alberto Basalo",
+    "url": "https://albertobasalo.dev"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

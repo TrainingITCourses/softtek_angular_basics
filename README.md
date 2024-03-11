@@ -1,6 +1,6 @@
 # Softtek Angular Basics
 
-> Laboratorio para [curso de Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartido por [Alberto Basalo](https://albertobasalo.dev) para TrainingIT.
+> [Laboratorio de ejemplo](https://github.com/TrainingITCourses/softtek_angular_basics) del curso de [Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartido por [Alberto Basalo](https://albertobasalo.dev) con TrainingIT.
 
 ## Requisitos para el laboratorio
 
