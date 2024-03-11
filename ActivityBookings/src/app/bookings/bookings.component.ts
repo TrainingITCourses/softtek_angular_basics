@@ -1,4 +1,5 @@
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,7 +14,6 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { ACTIVITIES } from '../domain/activities.data';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 
 @Component({
@@ -97,6 +97,7 @@ import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class BookingsComponent {
+  #http = inject(HttpClient);
   #title = inject(Title);
   #meta = inject(Meta);
 
@@ -104,9 +105,11 @@ export default class BookingsComponent {
   slug: InputSignal<string> = input.required<string>();
 
   /** The activity that comes from the data array based on the slug signal */
-  activity: Signal<Activity> = computed(
-    () => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
-  );
+  // activity: Signal<Activity> = computed(
+  //   () =>  ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
+  // );
+
+  activity: WritableSignal<Activity> = signal(NULL_ACTIVITY);
 
   currentParticipants = signal(3);
 
@@ -125,6 +128,18 @@ export default class BookingsComponent {
   canBook = computed(() => this.newParticipants() > 0);
 
   constructor() {
+    effect(
+      () => {
+        const slug = this.slug();
+        const apiUrl = 'http://localhost:3000/activities';
+        const url = `${apiUrl}?slug=${slug}`;
+        this.#http.get<Activity[]>(url).subscribe((result) => {
+          this.activity.set(result[0]);
+        });
+      },
+      { allowSignalWrites: true },
+    );
+
     effect(() => {
       const activity = this.activity();
       this.#title.setTitle(activity.name);
