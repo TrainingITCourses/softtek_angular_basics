@@ -15,7 +15,7 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { map, switchMap } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 import { Booking, NULL_BOOKING } from '../domain/booking.type';
 
@@ -121,19 +121,42 @@ export default class BookingsComponent {
 
   slug: InputSignal<string> = input.required<string>();
 
-  activity: Signal<Activity> = toSignal(
-    toObservable(this.slug).pipe(
-      switchMap((slug: string) => {
-        const apiUrl = 'http://localhost:3000/activities';
-        const url = `${apiUrl}?slug=${slug}`;
-        return this.#http.get<Activity[]>(url);
-      }),
-      map((activities: Activity[]) => {
-        return activities[0];
-      }),
-    ),
-    { initialValue: NULL_ACTIVITY },
+  // 0 -> si fuese síncrona
+
+  // activityOld: Signal<Activity> = computed(
+  //   () => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
+  // );
+
+  // 1 -> convertir a observable
+  slug$: Observable<string> = toObservable(this.slug);
+  // 2 -> Para cada cambio en el observable, genero otro observable, y me suscribo a ese último
+  activity$: Observable<Activity> = this.slug$.pipe(
+    switchMap((slug: string) => {
+      const apiUrl = 'http://localhost:3000/activities';
+      const url = `${apiUrl}?slug=${slug}`;
+      return this.#http.get<Activity[]>(url);
+    }),
+    map((activities: Activity[]) => {
+      return activities[0];
+    }),
   );
+  // 3 - > Transformo un observable a una señal usada en la template y otras computed...
+  activity: Signal<Activity> = toSignal(this.activity$, { initialValue: NULL_ACTIVITY });
+
+  // 4 - > en una sola instrucción
+  // activity: Signal<Activity> = toSignal(
+  //   toObservable(this.slug).pipe(
+  //     switchMap((slug: string) => {
+  //       const apiUrl = 'http://localhost:3000/activities';
+  //       const url = `${apiUrl}?slug=${slug}`;
+  //       return this.#http.get<Activity[]>(url);
+  //     }),
+  //     map((activities: Activity[]) => {
+  //       return activities[0];
+  //     }),
+  //   ),
+  //   { initialValue: NULL_ACTIVITY },
+  // );
 
   constructor() {
     effect(() => {
