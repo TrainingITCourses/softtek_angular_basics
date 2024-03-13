@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { Activity } from '../domain/activity.type';
@@ -32,14 +33,37 @@ export default class HomePage {
   #meta = inject(Meta);
   #http = inject(HttpClient);
 
-  activities: WritableSignal<Activity[]> = signal([]);
+  //activities: WritableSignal<Activity[]> = signal([]);
+
+  // activities: Signal<Activity[]> = toSignal(
+  //   this.#http.get<Activity[]>('http://localhost:3000/activities').pipe(
+  //     catchError((error) => {
+  //       console.log(error);
+  //       return of([]);
+  //     }),
+  //   ),
+  //   { initialValue: [] },
+  // );
+
+  // Qué hace el toSignal() ??
+  // 1 - subscribe
+  // 2 - signal.set
+  // 3 - unsubscribe
+  // 4 - signal read-only no mutable
+
+  activitiesNullable: Signal<Activity[] | undefined> = toSignal(
+    this.#http.get<Activity[]>('http://localhost:3000/activities'),
+  );
+
+  activities: Signal<Activity[]> = computed(() => this.activitiesNullable() || []);
 
   constructor() {
     this.#title.setTitle('🏡 - Home');
     this.#meta.updateTag({ name: 'description', content: 'Home page' });
 
-    this.#http
-      .get<Activity[]>('http://localhost:3000/activities')
-      .subscribe((result: Activity[]) => this.activities.set(result));
+    // this.#http.get<Activity[]>('http://localhost:3000/activities').subscribe({
+    //   next: (result: Activity[]) => this.activities.set(result),
+    //   error: () => this.activities.set([]),
+    // });
   }
 }
