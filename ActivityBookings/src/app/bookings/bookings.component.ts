@@ -12,8 +12,10 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { map, switchMap } from 'rxjs';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 import { Booking, NULL_BOOKING } from '../domain/booking.type';
 
@@ -102,17 +104,7 @@ export default class BookingsComponent {
   #title = inject(Title);
   #meta = inject(Meta);
 
-  /** The slug of the activity that comes from the router */
-  slug: InputSignal<string> = input.required<string>();
-
-  /** The activity that comes from the data array based on the slug signal */
-  // activity: Signal<Activity> = computed(
-  //   () =>  ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
-  // );
-
-  activity: WritableSignal<Activity> = signal(NULL_ACTIVITY);
-
-  currentParticipants = signal(3);
+  currentParticipants: WritableSignal<number> = signal<number>(3);
 
   participants: WritableSignal<{ id: number }[]> = signal([{ id: 1 }, { id: 2 }, { id: 3 }]);
 
@@ -121,28 +113,29 @@ export default class BookingsComponent {
   totalParticipants: Signal<number> = computed(
     () => this.currentParticipants() + this.newParticipants(),
   );
-
   maxNewParticipants = computed(() => this.activity().maxParticipants - this.currentParticipants());
-
   isSoldOut = computed(() => this.totalParticipants() >= this.activity().maxParticipants);
-
   canBook = computed(() => this.newParticipants() > 0);
 
-  constructor() {
-    effect(
-      () => {
-        const slug = this.slug();
+  /** The slug of the activity that comes from the router */
+
+  slug: InputSignal<string> = input.required<string>();
+
+  activity: Signal<Activity> = toSignal(
+    toObservable(this.slug).pipe(
+      switchMap((slug: string) => {
         const apiUrl = 'http://localhost:3000/activities';
         const url = `${apiUrl}?slug=${slug}`;
-        this.#http.get<Activity[]>(url).subscribe((result) => {
-          this.activity.set(result[0]);
-        });
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
+        return this.#http.get<Activity[]>(url);
+      }),
+      map((activities: Activity[]) => {
+        return activities[0];
+      }),
+    ),
+    { initialValue: NULL_ACTIVITY },
+  );
 
+  constructor() {
     effect(() => {
       const activity = this.activity();
       this.#title.setTitle(activity.name);
