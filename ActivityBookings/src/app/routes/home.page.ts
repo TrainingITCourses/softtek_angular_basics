@@ -37,11 +37,9 @@ export default class HomePage {
   constructor() {
     this.#title.setTitle('🏡 - Home');
     this.#meta.updateTag({ name: 'description', content: 'Home page' });
-    this.#http.get<Activity[]>('http://localhost:3000/activities').subscribe((result) => {
-      console.log('😨 result', result.length);
-      this.activities.set(result);
-      console.log('this.activities', this.activities);
-    });
-    console.log('constructor finished');
+
+    this.#http
+      .get<Activity[]>('http://localhost:3000/activities')
+      .subscribe((result: Activity[]) => this.activities.set(result));
   }
 }

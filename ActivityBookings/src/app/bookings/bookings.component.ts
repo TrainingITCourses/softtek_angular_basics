@@ -138,7 +138,9 @@ export default class BookingsComponent {
           this.activity.set(result[0]);
         });
       },
-      { allowSignalWrites: true },
+      {
+        allowSignalWrites: true,
+      },
     );
 
     effect(() => {
@@ -170,26 +172,33 @@ export default class BookingsComponent {
   }
 
   onBookingClick() {
-    console.log('Saving Booking for participants: ', this.newParticipants());
     const newBooking: Booking = NULL_BOOKING;
     newBooking.activityId = this.activity().id;
     newBooking.participants = this.newParticipants();
     if (newBooking.payment)
       newBooking.payment.amount = this.activity().price * this.newParticipants();
-    const apiUrl = 'http://localhost:3000/bookings';
 
+    const apiUrl = 'http://localhost:3000/bookings';
     this.#http.post<Booking>(apiUrl, newBooking).subscribe({
-      next: (result) => {
-        console.log('booking saved', result);
-        // ToDo : save activity status
+      next: () => {
+        this.putActivityStatus();
       },
-      error: (error) => {
-        console.log('error', error);
+      error: (err) => {
+        console.log('err', err);
       },
     });
+  }
 
-    console.log('Booking saved for participants: ', this.newParticipants());
-    this.currentParticipants.set(this.totalParticipants());
-    this.newParticipants.set(0);
+  putActivityStatus() {
+    const updatedActivity = this.activity();
+    updatedActivity.status = 'confirmed';
+    this.#http
+      .put<Activity>('http://localhost:3000/activities/' + updatedActivity.id, updatedActivity)
+      .subscribe({
+        next: () => {
+          this.currentParticipants.set(this.totalParticipants());
+          this.newParticipants.set(0);
+        },
+      });
   }
 }
