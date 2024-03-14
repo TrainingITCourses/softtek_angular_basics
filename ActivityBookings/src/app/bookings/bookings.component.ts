@@ -118,18 +118,17 @@ export default class BookingsComponent {
   canBook = computed(() => this.newParticipants() > 0);
 
   /** The slug of the activity that comes from the router */
-
   slug: InputSignal<string> = input.required<string>();
 
-  // 0 -> si fuese síncrona
+  // 0 -> If computation could be synchronous
 
   // activityOld: Signal<Activity> = computed(
   //   () => ACTIVITIES.find((a) => a.slug === this.slug()) || NULL_ACTIVITY,
   // );
 
-  // 1 -> convertir a observable
+  // 1 -> Convert source signal to an observable
   slug$: Observable<string> = toObservable(this.slug);
-  // 2 -> Para cada cambio en el observable, genero otro observable, y me suscribo a ese último
+  // 2 -> RxJs operators do the heavy work with other async calls and transformations
   activity$: Observable<Activity> = this.slug$.pipe(
     switchMap((slug: string) => {
       const apiUrl = 'http://localhost:3000/activities';
@@ -140,10 +139,10 @@ export default class BookingsComponent {
       return activities[0];
     }),
   );
-  // 3 - > Transformo un observable a una señal usada en la template y otras computed...
+  // 3 - > Convert back the observable into a signal usable from the template
   activity: Signal<Activity> = toSignal(this.activity$, { initialValue: NULL_ACTIVITY });
 
-  // 4 - > en una sola instrucción
+  // 4 - > Do it all at once
   // activity: Signal<Activity> = toSignal(
   //   toObservable(this.slug).pipe(
   //     switchMap((slug: string) => {
