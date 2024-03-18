@@ -1,5 +1,4 @@
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,10 +14,11 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { Activity, NULL_ACTIVITY } from '../../domain/activity.type';
 import { Booking, NULL_BOOKING } from '../../domain/booking.type';
 import { BookingConfirmComponent } from './booking-confirm.component';
+import { BookingsService } from './bookings.service';
 
 @Component({
   selector: 'lab-bookings',
@@ -97,9 +97,9 @@ import { BookingConfirmComponent } from './booking-confirm.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class BookingsPage {
-  #http = inject(HttpClient);
   #title = inject(Title);
   #meta = inject(Meta);
+  #service = inject(BookingsService);
 
   currentParticipants: WritableSignal<number> = signal<number>(3);
 
@@ -127,18 +127,7 @@ export default class BookingsPage {
   #slug$: Observable<string> = toObservable(this.slug);
   // 2 -> RxJs operators do the heavy work with other async calls and transformations
   #activity$: Observable<Activity> = this.#slug$.pipe(
-    switchMap((slug: string) => {
-      const apiUrl = 'http://localhost:3000/activities';
-      const url = `${apiUrl}?slug=${slug}`;
-      return this.#http.get<Activity[]>(url);
-    }),
-    map((activities: Activity[]) => {
-      return activities[0] || NULL_ACTIVITY;
-    }),
-    catchError((error) => {
-      console.log('error', error);
-      return of(NULL_ACTIVITY);
-    }),
+    switchMap((slug: string) => this.#service.getActivityBySlug$(slug)),
   );
   // 3 - > Convert back the observable into a public signal usable from the template
   activity: Signal<Activity> = toSignal(this.#activity$, { initialValue: NULL_ACTIVITY });
@@ -193,9 +182,7 @@ export default class BookingsPage {
     newBooking.participants = this.newParticipants();
     if (newBooking.payment)
       newBooking.payment.amount = this.activity().price * this.newParticipants();
-
-    const apiUrl = 'http://localhost:3000/bookings';
-    this.#http.post<Booking>(apiUrl, newBooking).subscribe({
+    this.#service.postBooking$(newBooking).subscribe({
       next: () => {
         this.putActivityStatus();
       },
@@ -208,13 +195,11 @@ export default class BookingsPage {
   putActivityStatus() {
     const updatedActivity = this.activity();
     updatedActivity.status = 'confirmed';
-    this.#http
-      .put<Activity>('http://localhost:3000/activities/' + updatedActivity.id, updatedActivity)
-      .subscribe({
-        next: () => {
-          this.currentParticipants.set(this.totalParticipants());
-          this.newParticipants.set(0);
-        },
-      });
+    this.#service.putActivityStatus$(updatedActivity).subscribe({
+      next: () => {
+        this.currentParticipants.set(this.totalParticipants());
+        this.newParticipants.set(0);
+      },
+    });
   }
 }

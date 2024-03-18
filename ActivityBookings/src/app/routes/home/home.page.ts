@@ -1,5 +1,4 @@
 import { JsonPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,9 +9,9 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
-import { catchError, of } from 'rxjs';
 import { Activity } from '../../domain/activity.type';
 import { ActivityComponent } from './activity.component';
+import { HomeService } from './home.service';
 
 @Component({
   standalone: true,
@@ -44,19 +43,11 @@ import { ActivityComponent } from './activity.component';
 export default class HomePage {
   #title = inject(Title);
   #meta = inject(Meta);
-  #http = inject(HttpClient);
+  #service = inject(HomeService);
 
   //activities: WritableSignal<Activity[]> = signal([]);
 
-  activities: Signal<Activity[]> = toSignal(
-    this.#http.get<Activity[]>('http://localhost:3000/activities').pipe(
-      catchError((error) => {
-        console.log(error);
-        return of([]);
-      }),
-    ),
-    { initialValue: [] },
-  );
+  activities: Signal<Activity[]> = toSignal(this.#service.getActivities$(), { initialValue: [] });
 
   favorites: WritableSignal<string[]> = signal<string[]>([]);
 
