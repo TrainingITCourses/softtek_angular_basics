@@ -15,7 +15,7 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { Observable, map, switchMap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
 import { Booking, NULL_BOOKING } from '../domain/booking.type';
 
@@ -136,7 +136,11 @@ export default class BookingsComponent {
       return this.#http.get<Activity[]>(url);
     }),
     map((activities: Activity[]) => {
-      return activities[0];
+      return activities[0] || NULL_ACTIVITY;
+    }),
+    catchError((error) => {
+      console.log('error', error);
+      return of(NULL_ACTIVITY);
     }),
   );
   // 3 - > Convert back the observable into a public signal usable from the template

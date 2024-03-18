@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { catchError, of } from 'rxjs';
 import { Activity } from '../domain/activity.type';
 
 @Component({
@@ -35,15 +36,15 @@ export default class HomePage {
 
   //activities: WritableSignal<Activity[]> = signal([]);
 
-  // activities: Signal<Activity[]> = toSignal(
-  //   this.#http.get<Activity[]>('http://localhost:3000/activities').pipe(
-  //     catchError((error) => {
-  //       console.log(error);
-  //       return of([]);
-  //     }),
-  //   ),
-  //   { initialValue: [] },
-  // );
+  activities: Signal<Activity[]> = toSignal(
+    this.#http.get<Activity[]>('http://localhost:3000/activities').pipe(
+      catchError((error) => {
+        console.log(error);
+        return of([]);
+      }),
+    ),
+    { initialValue: [] },
+  );
 
   // Qué hace el toSignal() ??
   // 1 - subscribe
@@ -52,11 +53,11 @@ export default class HomePage {
   // 4 - signal read-only no mutable
 
   // ToDo: Señal única usando operadores para preparar los datos
-  activitiesNullable: Signal<Activity[] | undefined> = toSignal(
-    this.#http.get<Activity[]>('http://localhost:3000/activities'),
-  );
+  // activitiesNullable: Signal<Activity[] | undefined> = toSignal(
+  //   this.#http.get<Activity[]>('http://localhost:3000/activities'),
+  // );
 
-  activities: Signal<Activity[]> = computed(() => this.activitiesNullable() || []);
+  // activities: Signal<Activity[]> = computed(() => this.activitiesNullable() || []);
 
   constructor() {
     this.#title.setTitle('🏡 - Home');
