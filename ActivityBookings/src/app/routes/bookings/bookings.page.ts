@@ -16,13 +16,14 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { Observable, catchError, map, of, switchMap } from 'rxjs';
-import { Activity, NULL_ACTIVITY } from '../domain/activity.type';
-import { Booking, NULL_BOOKING } from '../domain/booking.type';
+import { Activity, NULL_ACTIVITY } from '../../domain/activity.type';
+import { Booking, NULL_BOOKING } from '../../domain/booking.type';
+import { BookingConfirmComponent } from './booking-confirm.component';
 
 @Component({
   selector: 'lab-bookings',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, UpperCasePipe, FormsModule],
+  imports: [CurrencyPipe, DatePipe, UpperCasePipe, FormsModule, BookingConfirmComponent],
   template: `
     <article>
       @if (activity(); as activity) {
@@ -65,11 +66,7 @@ import { Booking, NULL_BOOKING } from '../domain/booking.type';
         </div>
       </main>
       <footer>
-        @if (canBook()) {
-          <button class="primary" (click)="onBookingClick()">Book now</button>
-        } @else {
-          <p>Book your place</p>
-        }
+        <lab-booking-confirm [canBook]="canBook()" (saveBooking)="onSaveBooking()" />
       </footer>
     </article>
   `,
@@ -99,7 +96,7 @@ import { Booking, NULL_BOOKING } from '../domain/booking.type';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class BookingsComponent {
+export default class BookingsPage {
   #http = inject(HttpClient);
   #title = inject(Title);
   #meta = inject(Meta);
@@ -190,7 +187,7 @@ export default class BookingsComponent {
     });
   }
 
-  onBookingClick() {
+  onSaveBooking() {
     const newBooking: Booking = NULL_BOOKING;
     newBooking.activityId = this.activity().id;
     newBooking.participants = this.newParticipants();

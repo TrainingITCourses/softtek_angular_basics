@@ -1,29 +1,41 @@
+import { JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Signal, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  WritableSignal,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
-import { Activity } from '../domain/activity.type';
+import { Activity } from '../../domain/activity.type';
+import { ActivityComponent } from './activity.component';
 
 @Component({
   standalone: true,
-  imports: [RouterLink],
+  imports: [ActivityComponent, JsonPipe],
   template: `
     <article>
       <header>
         <h2>Activities</h2>
       </header>
       <main>
-        @for (activity of activities(); track activity.id) {
-          <p>
-            <span>
-              <a [routerLink]="['/', 'bookings', activity.slug]"> {{ activity.name }}</a>
-            </span>
-            <span>at {{ activity.location }} </span>
-          </p>
+        @for (a of activities(); track a.id) {
+          <lab-activity [activity]="a" [(favorites)]="favorites" />
         }
       </main>
+      <footer>
+        <small>
+          Showing
+          <mark>{{ activities().length }}</mark>
+          activities, you have selected
+          <mark>{{ favorites().length }}</mark>
+          favorites.
+        </small>
+      </footer>
     </article>
   `,
   styles: ``,
@@ -45,6 +57,8 @@ export default class HomePage {
     ),
     { initialValue: [] },
   );
+
+  favorites: WritableSignal<string[]> = signal<string[]>([]);
 
   // Qué hace el toSignal() ??
   // 1 - subscribe
