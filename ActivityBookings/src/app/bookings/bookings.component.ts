@@ -127,9 +127,9 @@ export default class BookingsComponent {
   // );
 
   // 1 -> Convert source signal to an observable
-  slug$: Observable<string> = toObservable(this.slug);
+  #slug$: Observable<string> = toObservable(this.slug);
   // 2 -> RxJs operators do the heavy work with other async calls and transformations
-  activity$: Observable<Activity> = this.slug$.pipe(
+  #activity$: Observable<Activity> = this.#slug$.pipe(
     switchMap((slug: string) => {
       const apiUrl = 'http://localhost:3000/activities';
       const url = `${apiUrl}?slug=${slug}`;
@@ -139,8 +139,8 @@ export default class BookingsComponent {
       return activities[0];
     }),
   );
-  // 3 - > Convert back the observable into a signal usable from the template
-  activity: Signal<Activity> = toSignal(this.activity$, { initialValue: NULL_ACTIVITY });
+  // 3 - > Convert back the observable into a public signal usable from the template
+  activity: Signal<Activity> = toSignal(this.#activity$, { initialValue: NULL_ACTIVITY });
 
   // 4 - > Do it all at once
   // activity: Signal<Activity> = toSignal(

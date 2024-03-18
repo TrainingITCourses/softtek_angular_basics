@@ -51,6 +51,7 @@ export default class HomePage {
   // 3 - unsubscribe
   // 4 - signal read-only no mutable
 
+  // ToDo: Señal única usando operadores para preparar los datos
   activitiesNullable: Signal<Activity[] | undefined> = toSignal(
     this.#http.get<Activity[]>('http://localhost:3000/activities'),
   );
