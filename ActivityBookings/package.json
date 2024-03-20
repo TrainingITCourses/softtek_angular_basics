@@ -1,11 +1,16 @@
 {
   "name": "activity-bookings",
-  "version": "17.2.0",
+  "version": "17.3.0",
   "description": "Activity administration and booking",
   "author": {
     "name": "Alberto Basalo",
     "url": "https://albertobasalo.dev"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TrainingITCourses/softtek_angular_basics"
+  },
+  "homepage": "https://cursos.trainingit.es/course/view.php?id=1452",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

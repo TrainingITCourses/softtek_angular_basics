@@ -2,9 +2,11 @@
 
 > [Laboratorio de ejemplo](https://github.com/TrainingITCourses/softtek_angular_basics) del curso de [Angular Basics para Softtek](https://cursos.trainingit.es/course/view.php?id=1452) impartido por [Alberto Basalo](https://albertobasalo.dev) con TrainingIT.
 
-## Requisitos para el laboratorio
+> [!NOTE]
+> This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version _17.2.1._
+> Updated to Angular **17.3.0.**
 
-Proyecto generado con [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
+## Requisitos para el laboratorio
 
 Comprobar [versión de Node.js](https://angular.io/guide/versions) y npm.
 
