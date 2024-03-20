@@ -8,7 +8,7 @@ import {
   model,
   viewChild,
 } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, fromEvent, map, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, fromEvent, map } from 'rxjs';
 
 /**
  * The search component (dumb component) communicates its state to parent via a model signal.
@@ -41,15 +41,10 @@ export class SearchComponent {
       // and subscription emitting the search term as a model signal
       fromEvent<Event>(inputEl.nativeElement, 'input')
         .pipe(
-          tap((event: Event) => console.log('💫 input event from html element', event)),
           map((event: Event) => (event.target as HTMLInputElement).value),
-          tap((value: string) => console.log('💫 input value', value)),
           filter((value: string) => value.length > 2 || value.length === 0),
-          tap((filteredValue: string) => console.log('💫 input value after filter', filteredValue)),
           debounceTime(300),
-          tap((debouncedValue: string) => console.log('💫 input value after debounce', debouncedValue)),
           distinctUntilChanged(),
-          tap((distinctValue: string) => console.log('💫 input value after distinctUntilChanged', distinctValue)),
         )
         .subscribe((cleanSearchTerm: string) => this.searchTerm.set(cleanSearchTerm));
     });

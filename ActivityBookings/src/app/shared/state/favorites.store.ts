@@ -1,4 +1,12 @@
-import { Injectable, Signal, WritableSignal, computed, effect, inject, signal } from '@angular/core';
+import {
+  Injectable,
+  Signal,
+  WritableSignal,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { LocalRepository } from '@services/local.repository';
 
 /**
@@ -40,6 +48,7 @@ export class FavoritesStore {
    * @param favorites The array of favorites to be saved
    */
   setState(favorites: string[]): void {
+    console.log('Favorites changed', favorites);
     this.#state.set(favorites);
   }
 

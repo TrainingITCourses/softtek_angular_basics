@@ -45,10 +45,13 @@ export default class FavoritesPage {
   #favoriteSlugs: string[] = this.#favoritesStore.state();
 
   /** A function that gets an observable of an activity based on its slug*/
-  #getActivityBySlug$ = (favoriteSlug: string) => this.#activitiesRepository.getActivityBySlug$(favoriteSlug);
+  #getActivityBySlug$ = (favoriteSlug: string) =>
+    this.#activitiesRepository.getActivityBySlug$(favoriteSlug);
 
   /** Maps each element of the array of favorite slugs to an array of activity observable*/
-  #mapActivitiesFromSlugs$: Observable<Activity>[] = this.#favoriteSlugs.map(this.#getActivityBySlug$);
+  #mapActivitiesFromSlugs$: Observable<Activity>[] = this.#favoriteSlugs.map(
+    this.#getActivityBySlug$,
+  );
 
   /** Forks in parallel, and joins the results in an only one observable of an array of favorite activities*/
   #activities$: Observable<Activity[]> = forkJoin(this.#mapActivitiesFromSlugs$);

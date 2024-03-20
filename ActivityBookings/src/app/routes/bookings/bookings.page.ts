@@ -41,7 +41,8 @@ import { ParticipantsComponent } from './participants.component';
             [alreadyParticipants]="alreadyParticipants()"
             [remainingPlaces]="remainingPlaces()"
             [newParticipants]="newParticipants()"
-            [totalParticipants]="totalParticipants()" />
+            [totalParticipants]="totalParticipants()"
+          />
         </main>
         <footer>
           @if (isBookable()) {
@@ -50,7 +51,8 @@ import { ParticipantsComponent } from './participants.component';
               [(newParticipants)]="newParticipants"
               (saveBooking)="onSaveBooking($event)"
               [alreadyParticipants]="alreadyParticipants()"
-              [remainingPlaces]="remainingPlaces()" />
+              [remainingPlaces]="remainingPlaces()"
+            />
           }
           <div>{{ bookingSaved() }}</div>
         </footer>
@@ -72,6 +74,7 @@ export default class BookingsPage {
   // * Input signals division
 
   /** The slug of the activity that comes from the router */
+
   slug: Signal<string | undefined> = input<string>();
 
   // * Signals division
@@ -84,7 +87,11 @@ export default class BookingsPage {
   // * Computed signals division
 
   /** The activity that comes from the API based on the slug signal */
-  activity: Signal<Activity> = toSignalMap(this.slug, (slug) => this.#service.getActivityBySlug$(slug), NULL_ACTIVITY);
+  activity: Signal<Activity> = toSignalMap(
+    this.slug,
+    (slug) => this.#service.getActivityBySlug$(slug),
+    NULL_ACTIVITY,
+  );
   /** The bookings of the activity that comes from the API based on the activity signal */
   #activityBookings: Signal<Booking[]> = toSignalMap(
     this.activity,
@@ -98,7 +105,9 @@ export default class BookingsPage {
   );
 
   /** Already booked plus new participants */
-  totalParticipants: Signal<number> = computed(() => this.alreadyParticipants() + this.newParticipants());
+  totalParticipants: Signal<number> = computed(
+    () => this.alreadyParticipants() + this.newParticipants(),
+  );
 
   /** Activity status computed from current activity and total participants */
   activityStatus: Signal<ActivityStatus> = computed(() =>
@@ -106,10 +115,14 @@ export default class BookingsPage {
   );
 
   /** If the activity has an status bookable */
-  isBookable: Signal<boolean> = computed(() => ['published', 'confirmed'].includes(this.activity().status));
+  isBookable: Signal<boolean> = computed(() =>
+    ['published', 'confirmed'].includes(this.activity().status),
+  );
 
   /** Remaining places to book */
-  remainingPlaces: Signal<number> = computed(() => this.activity().maxParticipants - this.totalParticipants());
+  remainingPlaces: Signal<number> = computed(
+    () => this.activity().maxParticipants - this.totalParticipants(),
+  );
 
   constructor() {
     // Change the title and meta tags based on the activity signal changes
@@ -134,7 +147,9 @@ export default class BookingsPage {
           console.error('Error creating booking', error);
           throw error;
         }),
-        switchMap(() => this.#service.updateActivityStatus$(this.activity(), this.activityStatus())),
+        switchMap(() =>
+          this.#service.updateActivityStatus$(this.activity(), this.activityStatus()),
+        ),
         catchError((error) => {
           console.error('Error updating activity', error);
           throw error;

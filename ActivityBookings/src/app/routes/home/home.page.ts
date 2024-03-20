@@ -46,7 +46,8 @@ import { HomeService } from './home.service';
         [favoritesCount]="favorites().length"
         [search]="search()"
         [orderBy]="orderBy()"
-        [sort]="sort()" />
+        [sort]="sort()"
+      />
     </article>
   `,
 })
@@ -74,13 +75,19 @@ export default class HomePage {
   // * Computed signals and interop division
 
   /** Computed filter from the search, orderBy and sort signals */
-  #filter: Signal<Filter> = computed(() => ({ search: this.search(), orderBy: this.orderBy(), sort: this.sort() }));
+  #filter: Signal<Filter> = computed(() => ({
+    search: this.search(),
+    orderBy: this.orderBy(),
+    sort: this.sort(),
+  }));
   /** The filter signal interop as an observable */
   #filter$: Observable<Filter> = toObservable(this.#filter);
   /** A function that returns the observable of activities based on the filter */
   #getActivitiesByFilter$ = (filter: Filter) => this.#service.getActivitiesByFilter$(filter);
   /** Pipeline with a switch map to get the activities observable based on the filter observable */
-  #filter$SwitchMapApi$: Observable<Activity[]> = this.#filter$.pipe(switchMap(this.#getActivitiesByFilter$));
+  #filter$SwitchMapApi$: Observable<Activity[]> = this.#filter$.pipe(
+    switchMap(this.#getActivitiesByFilter$),
+  );
   /** The activities signal based on the filter observable */
   activities: Signal<Activity[]> = toSignal(this.#filter$SwitchMapApi$, { initialValue: [] });
 
